@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>PDF Loader</title>
+    <script>
+      const file = new URLSearchParams(window.location.search).get("file");
+      const path = file.startsWith("/") ? file : "/" + file;
+
+      fetch(path)
+        .then((res) => {
+          if (!res.ok) throw new Error("Fetch failed");
+          return res.blob();
+        })
+        .then((blob) => {
+          const blobUrl = URL.createObjectURL(blob);
+          const viewer = `/pdfjs-5.2.133-dist/web/viewer.html?file=${encodeURIComponent(blobUrl)}#pagemode=none`;
+          window.location.replace(viewer);
+        })
+        .catch((e) => {
+          console.error("PDF error:", e);
+          document.body.innerText = "❌ Failed to load PDF.";
+        });
+    </script>
+  </head>
+  <body>
+    <p>📄 Loading PDF...</p>
+  </body>
+</html>
